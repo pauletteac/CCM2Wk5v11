@@ -509,30 +509,80 @@ ${nav()}
 
 /* ---------------- CERTIFICATE ---------------- */
 function showCertificate(){
-document.getElementById("certificate").classList.remove("hidden");
+  document.getElementById("certificate").classList.remove("hidden");
 }
+
 function downloadCertificate(){
-const name=document.getElementById("learnerName").value||"Learner";
-const date=new Date().toLocaleDateString();
-const html=`
-<html><body style="font-family:Inter;text-align:center;padding:40px">
-<h1>Certificate of Completion</h1>
-<p>This certifies that</p>
-<h2>${name}</h2>
-<p>has successfully completed the</p>
-<strong>GI Interactive Clinical Case</strong>
-<p>Date: ${date}</p>
-</body></html>`;
-const blob=new Blob([html],{type:"text/html"});
-const a=document.createElement("a");
-a.href=URL.createObjectURL(blob);
-a.download="GI_Case_Certificate.html";
-a.click();
+  const nameInput = document.getElementById("learnerName");
+  if (!nameInput || !nameInput.value.trim()) {
+    alert("Please enter your name before downloading the certificate.");
+    return;
+  }
+
+  const name = nameInput.value.trim();
+  const date = new Date().toLocaleDateString();
+
+  // Create canvas
+  const canvas = document.createElement("canvas");
+  canvas.width = 1200;
+  canvas.height = 850;
+  const ctx = canvas.getContext("2d");
+
+  // Background
+  ctx.fillStyle = "#f0f8ff"; // Alice Blue
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Border
+  ctx.strokeStyle = "#1b4f72";
+  ctx.lineWidth = 8;
+  ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
+
+  // Title
+  ctx.fillStyle = "#1b4f72";
+  ctx.font = "bold 56px Inter, Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("Certificate of Completion", canvas.width / 2, 180);
+
+  // Body text
+  ctx.fillStyle = "#1a2e4a";
+  ctx.font = "28px Inter, Arial";
+  ctx.fillText("This certifies that", canvas.width / 2, 280);
+
+  // Name
+  ctx.font = "bold 42px Inter, Arial";
+  ctx.fillText(name, canvas.width / 2, 360);
+
+  // Course text
+  ctx.font = "28px Inter, Arial";
+  ctx.fillText(
+    "has successfully completed the",
+    canvas.width / 2,
+    430
+  );
+
+  ctx.font = "bold 30px Inter, Arial";
+  ctx.fillText(
+    "GI Interactive Clinical Case",
+    canvas.width / 2,
+    480
+  );
+
+  // Date
+  ctx.font = "24px Inter, Arial";
+  ctx.fillText("Date: " + date, canvas.width / 2, 560);
+
+  // Footer
+  ctx.font = "22px Inter, Arial";
+  ctx.fillText(
+    "Doctor of Medical Science (DMSc) Program",
+    canvas.width / 2,
+    640
+  );
+
+  // Download JPG
+  const link = document.createElement("a");
+  link.download = "GI_Case_Certificate.jpg";
+  link.href = canvas.toDataURL("image/jpeg", 0.95);
+  link.click();
 }
 
-/* ---------------- START ---------------- */
-objectives();
-</script>
-
-</body>
-</html>
